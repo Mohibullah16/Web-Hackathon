@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from app.routers import auth, produce, external_apis, forum
+from app.routers import auth, produce, external_apis, forum, profit_estimator
 from app.database import settings
 from pathlib import Path
 
@@ -34,6 +34,7 @@ app.include_router(auth.router)
 app.include_router(produce.router)
 app.include_router(external_apis.router)
 app.include_router(forum.router)
+app.include_router(profit_estimator.router)
 
 
 @app.get("/")
