@@ -3,18 +3,20 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Container, Title, Table, TextInput, Button, Group, Paper, 
   Text, Card, Grid, Badge, Alert, LoadingOverlay, ActionIcon,
-  AppShell, Header
+  AppShell, Header, Checkbox
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { 
   IconSearch, IconTrendingUp, IconCloudRain, IconThermometer, 
-  IconDroplet, IconX, IconLogout, IconMessage, IconCheck, IconMap 
+  IconDroplet, IconX, IconLogout, IconMessage, IconCheck, IconMap,
+  IconChartLine
 } from '@tabler/icons-react';
 import axios from '../api/axios';
 import { useAuth } from '../context/authContext';
 import { getErrorMessage } from '../utils/error';
 import PriceChartModal from '../components/PriceChartModal';
 import WeatherMapModal from '../components/WeatherMapModal';
+import CompareProduceModal from '../components/CompareProduceModal';
 
 function FarmerDashboard() {
   const navigate = useNavigate();
@@ -30,6 +32,8 @@ function FarmerDashboard() {
   const [selectedProduce, setSelectedProduce] = useState(null);
   const [modalOpened, setModalOpened] = useState(false);
   const [weatherMapOpened, setWeatherMapOpened] = useState(false);
+  const [selectedForComparison, setSelectedForComparison] = useState([]);
+  const [compareModalOpened, setCompareModalOpened] = useState(false);
 
   useEffect(() => {
     // Wait for auth to load before checking user
@@ -88,6 +92,34 @@ function FarmerDashboard() {
   const handleViewTrend = (produce) => {
     setSelectedProduce(produce);
     setModalOpened(true);
+  };
+
+  const handleCompareCheckbox = (produceId, checked) => {
+    if (checked) {
+      if (selectedForComparison.length < 5) {
+        setSelectedForComparison([...selectedForComparison, produceId]);
+      } else {
+        notifications.show({
+          title: 'Limit Reached',
+          message: 'You can only compare up to 5 items at once',
+          color: 'yellow',
+        });
+      }
+    } else {
+      setSelectedForComparison(selectedForComparison.filter(id => id !== produceId));
+    }
+  };
+
+  const handleCompare = () => {
+    if (selectedForComparison.length < 2) {
+      notifications.show({
+        title: 'Selection Required',
+        message: 'Please select at least 2 items to compare',
+        color: 'yellow',
+      });
+      return;
+    }
+    setCompareModalOpened(true);
   };
 
   const handleGetAdvice = async (produce) => {
@@ -251,13 +283,24 @@ function FarmerDashboard() {
           <Paper shadow="sm" p="md" withBorder>
             <Group justify="space-between" mb="md">
               <Title order={4}>Market Prices</Title>
-              <TextInput
-                placeholder="Search produce..."
-                leftSection={<IconSearch size={16} />}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ width: 300 }}
-              />
+              <Group>
+                {selectedForComparison.length >= 2 && (
+                  <Button
+                    leftSection={<IconChartLine size={16} />}
+                    color="violet"
+                    onClick={handleCompare}
+                  >
+                    Compare ({selectedForComparison.length})
+                  </Button>
+                )}
+                <TextInput
+                  placeholder="Search produce..."
+                  leftSection={<IconSearch size={16} />}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ width: 300 }}
+                />
+              </Group>
             </Group>
 
             <LoadingOverlay visible={loading} />
@@ -265,6 +308,9 @@ function FarmerDashboard() {
             <Table striped highlightOnHover>
               <Table.Thead>
                 <Table.Tr>
+                  <Table.Th style={{ width: '50px' }}>
+                    <Text size="xs" fw={500}>Compare</Text>
+                  </Table.Th>
                   <Table.Th>Name</Table.Th>
                   <Table.Th>Latest Price</Table.Th>
                   <Table.Th>Avg Price</Table.Th>
@@ -279,6 +325,13 @@ function FarmerDashboard() {
                 {filteredProduce.map((item) => (
                   <>
                     <Table.Tr key={item.id}>
+                      <Table.Td>
+                        <Checkbox
+                          checked={selectedForComparison.includes(item.id)}
+                          onChange={(e) => handleCompareCheckbox(item.id, e.currentTarget.checked)}
+                          color="violet"
+                        />
+                      </Table.Td>
                       <Table.Td>
                         <Group gap="xs">
                           {item.image_url && (
@@ -390,6 +443,14 @@ function FarmerDashboard() {
         <WeatherMapModal
           opened={weatherMapOpened}
           onClose={() => setWeatherMapOpened(false)}
+        />
+
+        {/* Compare Produce Modal */}
+        <CompareProduceModal
+          opened={compareModalOpened}
+          onClose={() => setCompareModalOpened(false)}
+          selectedProduceIds={selectedForComparison}
+          produceList={produceList}
         />
       </AppShell.Main>
     </AppShell>
