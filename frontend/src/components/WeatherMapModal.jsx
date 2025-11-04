@@ -31,7 +31,7 @@ function WeatherMapModal({ opened, onClose }) {
   const [weatherData, setWeatherData] = useState({});
   const [loading, setLoading] = useState(false);
   const [zoom, setZoom] = useState(5);
-  const [centerTile, setCenterTile] = useState({ x: 23, y: 12 });
+  const [centerTile, setCenterTile] = useState({ x: 22, y: 11 });
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const mapRef = useRef(null);
@@ -80,7 +80,7 @@ function WeatherMapModal({ opened, onClose }) {
   };
 
   const handleZoomIn = () => {
-    if (zoom < 8) {
+    if (zoom < 7) {
       const newZoom = zoom + 1;
       setZoom(newZoom);
       // Adjust center tile for new zoom level - maintain Pakistan's position
@@ -95,7 +95,7 @@ function WeatherMapModal({ opened, onClose }) {
   };
 
   const handleZoomOut = () => {
-    if (zoom > 3) {
+    if (zoom > 4) {
       const newZoom = zoom - 1;
       setZoom(newZoom);
       // Adjust center tile for new zoom level - maintain Pakistan's position
@@ -110,7 +110,7 @@ function WeatherMapModal({ opened, onClose }) {
 
   const handleResetView = () => {
     setZoom(5);
-    setCenterTile({ x: 23, y: 12 });
+    setCenterTile({ x: 22, y: 11 });
   };
 
   const handleMouseDown = (e) => {
@@ -124,19 +124,33 @@ function WeatherMapModal({ opened, onClose }) {
     const deltaX = e.clientX - dragStart.x;
     const deltaY = e.clientY - dragStart.y;
     
+    // Pakistan bounds at zoom level 5: x(20-25), y(10-13)
+    const bounds = {
+      minX: 20,
+      maxX: 25,
+      minY: 10,
+      maxY: 13
+    };
+    
     // Move tile if dragged more than 50 pixels
     if (Math.abs(deltaX) > 50) {
-      setCenterTile(prev => ({
-        ...prev,
-        x: prev.x + (deltaX > 0 ? -1 : 1)
-      }));
+      const newX = centerTile.x + (deltaX > 0 ? -1 : 1);
+      if (newX >= bounds.minX && newX <= bounds.maxX) {
+        setCenterTile(prev => ({
+          ...prev,
+          x: newX
+        }));
+      }
       setDragStart({ x: e.clientX, y: e.clientY });
     }
     if (Math.abs(deltaY) > 50) {
-      setCenterTile(prev => ({
-        ...prev,
-        y: prev.y + (deltaY > 0 ? -1 : 1)
-      }));
+      const newY = centerTile.y + (deltaY > 0 ? -1 : 1);
+      if (newY >= bounds.minY && newY <= bounds.maxY) {
+        setCenterTile(prev => ({
+          ...prev,
+          y: newY
+        }));
+      }
       setDragStart({ x: e.clientX, y: e.clientY });
     }
   };
@@ -154,24 +168,71 @@ function WeatherMapModal({ opened, onClose }) {
     }
   };
 
-  // Get tiles around center tile
+  // Pakistan-only tile grid: compute tile range that bounds Pakistan for current zoom
   const getTileGrid = () => {
+    // Rough geographic bounds of Pakistan
+    const bounds = {
+      latMin: 23.5,
+      latMax: 37.5,
+      lonMin: 60.0,
+      lonMax: 77.5,
+    };
+
+    const lonLatToTile = (lon, lat, z) => {
+      const n = Math.pow(2, z);
+      const x = Math.floor((lon + 180) / 360 * n);
+      const latRad = (lat * Math.PI) / 180;
+      const y = Math.floor(
+        (1 - Math.log(Math.tan(latRad) + 1 / Math.cos(latRad)) / Math.PI) / 2 * n
+      );
+      return { x, y };
+    };
+
+    const topLeft = lonLatToTile(bounds.lonMin, bounds.latMax, zoom);
+    const bottomRight = lonLatToTile(bounds.lonMax, bounds.latMin, zoom);
+
+    const xMin = Math.min(topLeft.x, bottomRight.x);
+    const xMax = Math.max(topLeft.x, bottomRight.x);
+    const yMin = Math.min(topLeft.y, bottomRight.y);
+    const yMax = Math.max(topLeft.y, bottomRight.y);
+
     const tiles = [];
-    for (let dy = -1; dy <= 1; dy++) {
-      for (let dx = -1; dx <= 1; dx++) {
-        tiles.push([centerTile.x + dx, centerTile.y + dy]);
+    for (let y = yMin; y <= yMax; y++) {
+      for (let x = xMin; x <= xMax; x++) {
+        tiles.push([x, y]);
       }
     }
-    return tiles;
+
+    return {
+      tiles,
+      cols: xMax - xMin + 1,
+      rows: yMax - yMin + 1,
+    };
   };
+
+  // Pre-compute grid once per render
+  const tileGrid = getTileGrid();
 
   return (
     <Modal
       opened={opened}
       onClose={onClose}
-      title="🇵🇰 Pakistan Weather Map"
+      title={
+        <span style={{ color: '#2d5016', fontWeight: 600, fontSize: '1.2rem' }}>
+          🇵🇰 Pakistan Weather Map
+        </span>
+      }
       size="xl"
       centered
+      styles={{
+        header: {
+          borderBottom: '2px solid #d4edda',
+          paddingBottom: '12px',
+        },
+        body: {
+          padding: '20px',
+        },
+      }}
     >
       <LoadingOverlay visible={loading} />
       
@@ -189,6 +250,21 @@ function WeatherMapModal({ opened, onClose }) {
               </Group>
             ),
           }))}
+          styles={{
+            root: {
+              backgroundColor: '#f0f9ff',
+              border: '2px solid #d4edda',
+            },
+            indicator: {
+              backgroundColor: '#4a7c2c',
+            },
+            label: {
+              color: '#2d5016',
+              '&[data-active]': {
+                color: 'white',
+              },
+            },
+          }}
         />
       </Group>
 
@@ -202,12 +278,8 @@ function WeatherMapModal({ opened, onClose }) {
           overflow: 'hidden',
           background: '#1a1a2e',
           borderRadius: '8px',
-          cursor: isDragging ? 'grabbing' : 'grab'
+          cursor: 'default'
         }}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUp}
-        onMouseLeave={handleMouseUp}
         onWheel={handleWheel}
       >
         {/* Zoom Controls */}
@@ -230,8 +302,11 @@ function WeatherMapModal({ opened, onClose }) {
             onClick={handleZoomIn}
             variant="filled"
             size="lg"
-            color="blue"
-            disabled={zoom >= 8}
+            disabled={zoom >= 7}
+            style={{
+              backgroundColor: '#4a7c2c',
+              opacity: zoom >= 7 ? 0.5 : 1,
+            }}
           >
             <IconZoomIn size={20} />
           </ActionIcon>
@@ -239,8 +314,11 @@ function WeatherMapModal({ opened, onClose }) {
             onClick={handleZoomOut}
             variant="filled"
             size="lg"
-            color="blue"
-            disabled={zoom <= 3}
+            disabled={zoom <= 4}
+            style={{
+              backgroundColor: '#4a7c2c',
+              opacity: zoom <= 4 ? 0.5 : 1,
+            }}
           >
             <IconZoomOut size={20} />
           </ActionIcon>
@@ -248,14 +326,16 @@ function WeatherMapModal({ opened, onClose }) {
             onClick={handleResetView}
             variant="filled"
             size="lg"
-            color="green"
+            style={{
+              backgroundColor: '#37b24d',
+            }}
           >
             <IconFocus size={20} />
           </ActionIcon>
           <Text size="xs" ta="center" c="dimmed">Zoom: {zoom}</Text>
         </div>
 
-        {/* Base Map Layer - OpenStreetMap tiles */}
+        {/* Base Map Layer - OpenStreetMap tiles (Pakistan only) */}
         <div
           style={{
             position: 'absolute',
@@ -264,11 +344,11 @@ function WeatherMapModal({ opened, onClose }) {
             right: 0,
             bottom: 0,
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gridTemplateRows: 'repeat(3, 1fr)',
+            gridTemplateColumns: `repeat(${tileGrid.cols}, 1fr)`,
+            gridTemplateRows: `repeat(${tileGrid.rows}, 1fr)`,
           }}
         >
-          {getTileGrid().map(([x, y], index) => (
+          {tileGrid.tiles.map(([x, y], index) => (
             <img
               key={`base-${index}`}
               src={`https://tile.openstreetmap.org/${zoom}/${x}/${y}.png`}
@@ -291,15 +371,16 @@ function WeatherMapModal({ opened, onClose }) {
             right: 0,
             bottom: 0,
             display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gridTemplateRows: 'repeat(3, 1fr)',
+            gridTemplateColumns: `repeat(${tileGrid.cols}, 1fr)`,
+            gridTemplateRows: `repeat(${tileGrid.rows}, 1fr)`,
             zIndex: 10,
+            opacity: 0.7,
           }}
         >
           {/* Temperature Layer */}
           {selectedLayer === 'TA2' && (
             <>
-              {getTileGrid().map(([x, y], index) => (
+              {tileGrid.tiles.map(([x, y], index) => (
                 <img
                   key={`temp-${index}`}
                   src={`https://tile.openweathermap.org/map/temp_new/${zoom}/${x}/${y}.png?appid=${OPENWEATHER_API_KEY}`}
@@ -317,7 +398,7 @@ function WeatherMapModal({ opened, onClose }) {
           {/* Precipitation Layer */}
           {selectedLayer === 'PA0' && (
             <>
-              {getTileGrid().map(([x, y], index) => (
+              {tileGrid.tiles.map(([x, y], index) => (
                 <img
                   key={`precip-${index}`}
                   src={`https://tile.openweathermap.org/map/precipitation_new/${zoom}/${x}/${y}.png?appid=${OPENWEATHER_API_KEY}`}
@@ -335,7 +416,7 @@ function WeatherMapModal({ opened, onClose }) {
           {/* Clouds Layer */}
           {selectedLayer === 'CL' && (
             <>
-              {getTileGrid().map(([x, y], index) => (
+              {tileGrid.tiles.map(([x, y], index) => (
                 <img
                   key={`cloud-${index}`}
                   src={`https://tile.openweathermap.org/map/clouds_new/${zoom}/${x}/${y}.png?appid=${OPENWEATHER_API_KEY}`}
@@ -353,7 +434,7 @@ function WeatherMapModal({ opened, onClose }) {
           {/* Wind Layer */}
           {selectedLayer === 'WND' && (
             <>
-              {getTileGrid().map(([x, y], index) => (
+              {tileGrid.tiles.map(([x, y], index) => (
                 <img
                   key={`wind-${index}`}
                   src={`https://tile.openweathermap.org/map/wind_new/${zoom}/${x}/${y}.png?appid=${OPENWEATHER_API_KEY}`}
@@ -391,13 +472,14 @@ function WeatherMapModal({ opened, onClose }) {
             position: 'absolute',
             bottom: 10,
             right: 10,
-            background: 'rgba(255,255,255,0.95)',
+            background: 'rgba(255,255,255,0.98)',
             backdropFilter: 'blur(10px)',
             zIndex: 100,
             boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
+            border: '2px solid #d4edda',
           }}
         >
-          <Text size="xs" fw={700} mb={4}>
+          <Text size="xs" fw={700} mb={4} style={{ color: '#2d5016' }}>
             {selectedLayer === 'TA2' && 'Temperature (°C)'}
             {selectedLayer === 'PA0' && 'Precipitation (mm)'}
             {selectedLayer === 'CL' && 'Cloud Cover (%)'}

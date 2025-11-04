@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from '@mantine/form';
-import { TextInput, PasswordInput, Button, Paper, Title, Container, Text, Select } from '@mantine/core';
+import { TextInput, PasswordInput, Button, Paper, Title, Container, Text, Select, Box, Stack, Group } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconCheck, IconX } from '@tabler/icons-react';
+import { IconCheck, IconX, IconLeaf, IconUser, IconLock, IconMail, IconUserCircle } from '@tabler/icons-react';
 import axios from '../api/axios';
 import { getErrorMessage } from '../utils/error';
 
@@ -63,66 +63,264 @@ function Register() {
   };
 
   return (
-    <Container size={420} my={40}>
-      <Title ta="center" style={{ fontWeight: 900 }}>
-        Create Account
-      </Title>
-      <Text c="dimmed" size="sm" ta="center" mt={5}>
-        Join the Smart Agriculture community
-      </Text>
+    <Box
+      style={{
+        minHeight: '100vh',
+        background: 'linear-gradient(to bottom, #87CEEB 0%, #98D8C8 50%, #90EE90 100%)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        position: 'relative',
+      }}
+    >
+      {/* Decorative elements */}
+      <Box
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: `
+            radial-gradient(circle at 20% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%)
+          `,
+          pointerEvents: 'none',
+        }}
+      />
+      <Container size={460} style={{ position: 'relative', zIndex: 1 }}>
+        {/* Logo and Header */}
+        <Stack align="center" gap="xs" mb={30}>
+          <Box
+            style={{
+              width: 80,
+              height: 80,
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #2d5016 0%, #4a7c2c 100%)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 8px 24px rgba(45, 80, 22, 0.3)',
+              border: '3px solid rgba(255, 255, 255, 0.3)',
+            }}
+          >
+            <IconLeaf size={40} color="#90EE90" />
+          </Box>
+          <Title 
+            order={1} 
+            style={{ 
+              color: '#2d5016',
+              fontWeight: 800,
+              fontSize: '36px',
+              textShadow: '0 2px 4px rgba(255, 255, 255, 0.5)',
+              letterSpacing: '-0.5px',
+            }}
+          >
+            CropSense
+          </Title>
+          <Text 
+            size="md" 
+            style={{ 
+              color: '#3d6b1f',
+              fontWeight: 500,
+            }}
+          >
+            Join the Future of Farming
+          </Text>
+        </Stack>
 
-      <Paper withBorder shadow="md" p={30} mt={30} radius="md">
-        <form onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Username"
-            placeholder="Choose a username"
-            required
-            {...form.getInputProps('username')}
-          />
-          <TextInput
-            label="Email"
-            placeholder="your@email.com"
-            required
-            mt="md"
-            {...form.getInputProps('email')}
-          />
-          <PasswordInput
-            label="Password"
-            placeholder="Choose a password"
-            required
-            mt="md"
-            {...form.getInputProps('password')}
-          />
-          <PasswordInput
-            label="Confirm Password"
-            placeholder="Confirm your password"
-            required
-            mt="md"
-            {...form.getInputProps('confirmPassword')}
-          />
-          <Select
-            label="Role"
-            placeholder="Select your role"
-            data={[
-              { value: 'farmer', label: 'Farmer' },
-              { value: 'admin', label: 'Admin' },
-            ]}
-            required
-            mt="md"
-            {...form.getInputProps('role')}
-          />
-          <Button fullWidth mt="xl" type="submit" loading={loading}>
-            Register
-          </Button>
-        </form>
-        <Text ta="center" mt="md" size="sm">
-          Already have an account?{' '}
-          <Link to="/login" style={{ fontWeight: 500 }}>
-            Login
-          </Link>
+        {/* Registration Form */}
+        <Paper 
+          shadow="xl" 
+          p={40} 
+          radius="lg"
+          style={{
+            background: 'rgba(255, 255, 255, 0.95)',
+            backdropFilter: 'blur(10px)',
+            border: '2px solid rgba(144, 238, 144, 0.3)',
+          }}
+        >
+          <Title order={3} mb={8} style={{ color: '#2d5016' }}>
+            Create Account
+          </Title>
+          <Text size="sm" c="dimmed" mb={25}>
+            Start managing your farm smarter
+          </Text>
+
+          <form onSubmit={form.onSubmit(handleSubmit)}>
+            <Stack gap="md">
+              <TextInput
+                label="Username"
+                placeholder="Choose a username"
+                size="md"
+                leftSection={<IconUser size={18} color="#4a7c2c" />}
+                required
+                styles={{
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                  input: {
+                    borderRadius: '10px',
+                    border: '2px solid #d4edda',
+                    backgroundColor: '#fefffe',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                      backgroundColor: '#ffffff',
+                    },
+                  },
+                }}
+                {...form.getInputProps('username')}
+              />
+              <TextInput
+                label="Email"
+                placeholder="your@email.com"
+                size="md"
+                leftSection={<IconMail size={18} color="#4a7c2c" />}
+                required
+                styles={{
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                  input: {
+                    borderRadius: '10px',
+                    border: '2px solid #d4edda',
+                    backgroundColor: '#fefffe',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                      backgroundColor: '#ffffff',
+                    },
+                  },
+                }}
+                {...form.getInputProps('email')}
+              />
+              <PasswordInput
+                label="Password"
+                placeholder="Choose a password"
+                size="md"
+                leftSection={<IconLock size={18} color="#4a7c2c" />}
+                required
+                styles={{
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                  input: {
+                    borderRadius: '10px',
+                    border: '2px solid #d4edda',
+                    backgroundColor: '#fefffe',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                      backgroundColor: '#ffffff',
+                    },
+                  },
+                }}
+                {...form.getInputProps('password')}
+              />
+              <PasswordInput
+                label="Confirm Password"
+                placeholder="Confirm your password"
+                size="md"
+                leftSection={<IconLock size={18} color="#4a7c2c" />}
+                required
+                styles={{
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                  input: {
+                    borderRadius: '10px',
+                    border: '2px solid #d4edda',
+                    backgroundColor: '#fefffe',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                      backgroundColor: '#ffffff',
+                    },
+                  },
+                }}
+                {...form.getInputProps('confirmPassword')}
+              />
+              <Select
+                label="Role"
+                placeholder="Select your role"
+                size="md"
+                leftSection={<IconUserCircle size={18} color="#4a7c2c" />}
+                data={[
+                  { value: 'farmer', label: '🌾 Farmer' },
+                  { value: 'admin', label: '👨‍💼 Admin' },
+                ]}
+                required
+                styles={{
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                  input: {
+                    borderRadius: '10px',
+                    border: '2px solid #d4edda',
+                    backgroundColor: '#fefffe',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                      backgroundColor: '#ffffff',
+                    },
+                  },
+                }}
+                {...form.getInputProps('role')}
+              />
+              <Button 
+                fullWidth 
+                size="md" 
+                type="submit" 
+                loading={loading}
+                style={{
+                  background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                  borderRadius: '10px',
+                  height: '48px',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  marginTop: '10px',
+                  boxShadow: '0 4px 12px rgba(45, 80, 22, 0.3)',
+                }}
+              >
+                Create Account
+              </Button>
+            </Stack>
+          </form>
+
+          <Group justify="center" mt={25} gap={4}>
+            <Text size="sm" c="dimmed">
+              Already have an account?
+            </Text>
+            <Link 
+              to="/login" 
+              style={{ 
+                color: '#4a7c2c',
+                fontWeight: 600,
+                textDecoration: 'none',
+              }}
+            >
+              Sign In
+            </Link>
+          </Group>
+        </Paper>
+
+        {/* Footer Text */}
+        <Text 
+          ta="center" 
+          size="xs" 
+          mt={20}
+          style={{ 
+            color: '#2d5016',
+            fontWeight: 500,
+            textShadow: '0 1px 2px rgba(255, 255, 255, 0.5)',
+          }}
+        >
+          Monitor crops • Track markets • Harvest success
         </Text>
-      </Paper>
-    </Container>
+      </Container>
+    </Box>
   );
 }
 

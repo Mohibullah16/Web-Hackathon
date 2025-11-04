@@ -104,28 +104,73 @@ function Forum() {
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 70 }}
       padding="md"
+      styles={{
+        main: {
+          background: 'linear-gradient(135deg, #f0f9ff 0%, #e8f5e9 100%)',
+          minHeight: '100vh',
+        },
+      }}
     >
-      <AppShell.Header>
+      <AppShell.Header
+        style={{
+          background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+          borderBottom: 'none',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
-          <Group>
-            <ActionIcon 
-              variant="light" 
-              onClick={goBack}
-              size="lg"
-            >
-              <IconArrowBack size={18} />
-            </ActionIcon>
-            <Title order={3}>Community Forum</Title>
+          <Group gap="md">
+            {/* CropSense Logo */}
+            <Group gap="xs">
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: '#2d5016',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
+              }}>
+                🌾
+              </div>
+              <div>
+                <Text size="lg" fw={700} style={{ color: 'white', lineHeight: 1.2 }}>
+                  CropSense
+                </Text>
+                <Text size="xs" style={{ color: '#b2f2bb', lineHeight: 1 }}>
+                  Community Forum
+                </Text>
+              </div>
+            </Group>
           </Group>
-          <Group>
-            <Text size="sm">Welcome, {user?.username}!</Text>
+          
+          <Group gap="sm">
+            <Button
+              variant="light"
+              onClick={goBack}
+              leftSection={<IconArrowBack size={16} />}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              Dashboard
+            </Button>
+            <Text size="sm" style={{ color: 'white' }}>
+              Welcome, {user?.username}!
+            </Text>
             <ActionIcon 
-              variant="light" 
-              color="red" 
+              variant="light"
               onClick={handleLogout}
               size="lg"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+              }}
             >
               <IconLogout size={18} />
             </ActionIcon>
@@ -136,10 +181,16 @@ function Forum() {
       <AppShell.Main>
         <Container size="lg">
           <Group justify="space-between" mb="lg">
-            <Title order={4}>Discussion Board</Title>
+            <Title order={4} style={{ color: '#2d5016' }}>
+              Discussion Board
+            </Title>
             <Button
               leftSection={<IconPlus size={16} />}
               onClick={() => setModalOpened(true)}
+              style={{
+                background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                color: 'white',
+              }}
             >
               Create Post
             </Button>
@@ -151,15 +202,36 @@ function Forum() {
             {posts.map((post) => (
               <Card 
                 key={post.id} 
-                shadow="sm" 
-                padding="lg" 
-                withBorder
-                style={{ cursor: 'pointer' }}
+                shadow="md" 
+                padding="lg"
+                style={{ 
+                  cursor: 'pointer',
+                  background: 'white',
+                  border: '2px solid #d4edda',
+                  borderRadius: '12px',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(74, 124, 44, 0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}
                 onClick={() => handleViewPost(post.id)}
               >
                 <Group justify="space-between" mb="xs">
-                  <Title order={4}>{post.title}</Title>
-                  <Badge color="blue" leftSection={<IconMessage size={12} />}>
+                  <Title order={4} style={{ color: '#2d5016' }}>
+                    {post.title}
+                  </Title>
+                  <Badge 
+                    leftSection={<IconMessage size={12} />}
+                    style={{
+                      background: 'linear-gradient(135deg, #339af0 0%, #1971c2 100%)',
+                      color: 'white',
+                    }}
+                  >
                     {post.comment_count} {post.comment_count === 1 ? 'comment' : 'comments'}
                   </Badge>
                 </Group>
@@ -187,7 +259,15 @@ function Forum() {
           </Stack>
 
           {posts.length === 0 && !loading && (
-            <Paper p="xl" ta="center" withBorder>
+            <Paper 
+              p="xl" 
+              ta="center"
+              style={{
+                background: 'white',
+                border: '2px solid #d4edda',
+                borderRadius: '12px',
+              }}
+            >
               <Text c="dimmed">No posts yet. Be the first to create one!</Text>
             </Paper>
           )}
@@ -196,8 +276,21 @@ function Forum() {
           <Modal
             opened={modalOpened}
             onClose={() => setModalOpened(false)}
-            title="Create New Post"
+            title={
+              <Text fw={600} size="lg" style={{ color: '#2d5016' }}>
+                Create New Post
+              </Text>
+            }
             size="lg"
+            styles={{
+              header: {
+                borderBottom: '2px solid #d4edda',
+                paddingBottom: '12px',
+              },
+              body: {
+                padding: '20px',
+              },
+            }}
           >
             <form onSubmit={form.onSubmit(handleCreatePost)}>
               <TextInput
@@ -205,6 +298,18 @@ function Forum() {
                 placeholder="Post title..."
                 required
                 {...form.getInputProps('title')}
+                styles={{
+                  input: {
+                    borderColor: '#d4edda',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                    },
+                  },
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                }}
               />
               <Textarea
                 label="Content"
@@ -213,8 +318,28 @@ function Forum() {
                 mt="md"
                 minRows={6}
                 {...form.getInputProps('content')}
+                styles={{
+                  input: {
+                    borderColor: '#d4edda',
+                    '&:focus': {
+                      borderColor: '#4a7c2c',
+                    },
+                  },
+                  label: {
+                    color: '#2d5016',
+                    fontWeight: 500,
+                  },
+                }}
               />
-              <Button fullWidth mt="xl" type="submit">
+              <Button 
+                fullWidth 
+                mt="xl" 
+                type="submit"
+                style={{
+                  background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                  color: 'white',
+                }}
+              >
                 Create Post
               </Button>
             </form>

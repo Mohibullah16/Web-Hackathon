@@ -5,7 +5,7 @@ import axios from '../api/axios';
 import { notifications } from '@mantine/notifications';
 import { IconX } from '@tabler/icons-react';
 
-const COLORS = ['#339af0', '#f03e3e', '#37b24d', '#f59f00', '#7950f2', '#f06595'];
+const COLORS = ['#4a7c2c', '#37b24d', '#51cf66', '#f59f00', '#339af0', '#7950f2'];
 
 function CompareProduceModal({ opened, onClose, selectedProduceIds, produceList }) {
   const [loading, setLoading] = useState(false);
@@ -91,9 +91,22 @@ function CompareProduceModal({ opened, onClose, selectedProduceIds, produceList 
     <Modal
       opened={opened}
       onClose={onClose}
-      title={`📊 Comparing: ${getProduceNames().join(' vs ')}`}
+      title={
+        <span style={{ color: '#2d5016', fontWeight: 600, fontSize: '1.2rem' }}>
+          Price Comparison: {getProduceNames().join(' vs ')}
+        </span>
+      }
       size="xl"
       centered
+      styles={{
+        header: {
+          borderBottom: '2px solid #d4edda',
+          paddingBottom: '12px',
+        },
+        body: {
+          padding: '20px',
+        },
+      }}
     >
       <LoadingOverlay visible={loading} />
       
@@ -117,9 +130,10 @@ function CompareProduceModal({ opened, onClose, selectedProduceIds, produceList 
             <Tooltip 
               formatter={(value) => value ? `Rs. ${value.toFixed(2)}` : 'No data'}
               contentStyle={{ 
-                backgroundColor: 'rgba(255, 255, 255, 0.95)', 
+                backgroundColor: 'rgba(255, 255, 255, 0.98)', 
                 borderRadius: '8px',
-                border: '1px solid #ddd'
+                border: '2px solid #d4edda',
+                color: '#2d5016'
               }}
             />
             <Legend 

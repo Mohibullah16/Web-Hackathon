@@ -88,30 +88,94 @@ function PostDetail() {
     navigate('/login');
   };
 
+  const goToDashboard = () => {
+    if (user.role === 'admin') {
+      navigate('/admin');
+    } else {
+      navigate('/dashboard');
+    }
+  };
+
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 70 }}
       padding="md"
+      styles={{
+        main: {
+          background: 'linear-gradient(135deg, #f0f9ff 0%, #e8f5e9 100%)',
+          minHeight: '100vh',
+        },
+      }}
     >
-      <AppShell.Header>
+      <AppShell.Header
+        style={{
+          background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+          borderBottom: 'none',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
-          <Group>
-            <ActionIcon 
-              variant="light" 
-              onClick={() => navigate('/forum')}
-              size="lg"
-            >
-              <IconArrowBack size={18} />
-            </ActionIcon>
-            <Title order={3}>Post Details</Title>
+          <Group gap="md">
+            {/* CropSense Logo */}
+            <Group gap="xs">
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+                background: '#2d5016',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: '24px',
+              }}>
+                🌾
+              </div>
+              <div>
+                <Text size="lg" fw={700} style={{ color: 'white', lineHeight: 1.2 }}>
+                  CropSense
+                </Text>
+                <Text size="xs" style={{ color: '#b2f2bb', lineHeight: 1 }}>
+                  Post Details
+                </Text>
+              </div>
+            </Group>
           </Group>
-          <Group>
-            <Text size="sm">Welcome, {user?.username}!</Text>
+          
+          <Group gap="sm">
+            <Button
+              variant="light"
+              onClick={() => navigate('/forum')}
+              leftSection={<IconArrowBack size={16} />}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              Back to Forum
+            </Button>
+            <Button
+              variant="light"
+              onClick={goToDashboard}
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+              }}
+            >
+              Dashboard
+            </Button>
+            <Text size="sm" style={{ color: 'white' }}>
+              Welcome, {user?.username}!
+            </Text>
             <ActionIcon 
-              variant="light" 
-              color="red" 
+              variant="light"
               onClick={handleLogout}
               size="lg"
+              style={{
+                backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+                border: '1px solid rgba(255, 255, 255, 0.3)',
+              }}
             >
               <IconLogout size={18} />
             </ActionIcon>
@@ -126,10 +190,26 @@ function PostDetail() {
           {post && (
             <>
               {/* Post Content */}
-              <Paper shadow="sm" p="xl" mb="lg" withBorder>
+              <Paper 
+                shadow="md" 
+                p="xl" 
+                mb="lg"
+                style={{
+                  background: 'white',
+                  border: '2px solid #d4edda',
+                  borderRadius: '12px',
+                }}
+              >
                 <Group justify="space-between" mb="md">
-                  <Title order={2}>{post.title}</Title>
-                  <Badge color="blue">
+                  <Title order={2} style={{ color: '#2d5016' }}>
+                    {post.title}
+                  </Title>
+                  <Badge
+                    style={{
+                      background: 'linear-gradient(135deg, #339af0 0%, #1971c2 100%)',
+                      color: 'white',
+                    }}
+                  >
                     {post.comment_count} {post.comment_count === 1 ? 'comment' : 'comments'}
                   </Badge>
                 </Group>
@@ -153,18 +233,41 @@ function PostDetail() {
               </Paper>
 
               {/* Add Comment Form */}
-              <Paper shadow="sm" p="md" mb="lg" withBorder>
-                <Title order={4} mb="md">Add a Comment</Title>
+              <Paper 
+                shadow="md" 
+                p="md" 
+                mb="lg"
+                style={{
+                  background: 'white',
+                  border: '2px solid #d4edda',
+                  borderRadius: '12px',
+                }}
+              >
+                <Title order={4} mb="md" style={{ color: '#2d5016' }}>
+                  Add a Comment
+                </Title>
                 <form onSubmit={form.onSubmit(handleAddComment)}>
                   <Textarea
                     placeholder="Share your thoughts..."
                     minRows={3}
                     {...form.getInputProps('content')}
+                    styles={{
+                      input: {
+                        borderColor: '#d4edda',
+                        '&:focus': {
+                          borderColor: '#4a7c2c',
+                        },
+                      },
+                    }}
                   />
                   <Button 
                     type="submit" 
                     mt="md" 
                     leftSection={<IconSend size={16} />}
+                    style={{
+                      background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                      color: 'white',
+                    }}
                   >
                     Post Comment
                   </Button>
@@ -172,8 +275,16 @@ function PostDetail() {
               </Paper>
 
               {/* Comments Section */}
-              <Paper shadow="sm" p="md" withBorder>
-                <Title order={4} mb="md">
+              <Paper 
+                shadow="md" 
+                p="md"
+                style={{
+                  background: 'white',
+                  border: '2px solid #d4edda',
+                  borderRadius: '12px',
+                }}
+              >
+                <Title order={4} mb="md" style={{ color: '#2d5016' }}>
                   Comments ({post.comments.length})
                 </Title>
                 
@@ -184,14 +295,22 @@ function PostDetail() {
                 ) : (
                   <Stack gap="md">
                     {post.comments.map((comment) => (
-                      <Card key={comment.id} withBorder p="md">
-                        <Text size="sm" mb="xs">
+                      <Card 
+                        key={comment.id} 
+                        p="md"
+                        style={{
+                          background: '#f8fdf9',
+                          border: '1px solid #d4edda',
+                          borderRadius: '8px',
+                        }}
+                      >
+                        <Text size="sm" mb="xs" style={{ color: '#2d5016' }}>
                           {comment.content}
                         </Text>
-                        <Divider my="xs" />
+                        <Divider my="xs" style={{ borderColor: '#d4edda' }} />
                         <Group justify="space-between">
                           <Text size="xs" c="dimmed">
-                            <strong>{comment.author_username}</strong>
+                            <strong style={{ color: '#4a7c2c' }}>{comment.author_username}</strong>
                           </Text>
                           <Text size="xs" c="dimmed">
                             {new Date(comment.created_at).toLocaleDateString('en-US', {

@@ -190,32 +190,80 @@ function FarmerDashboard() {
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 70 }}
       padding="md"
+      styles={{
+        main: {
+          background: 'linear-gradient(to bottom, #f0f9ff 0%, #e8f5e9 100%)',
+          minHeight: '100vh',
+        },
+      }}
     >
-      <AppShell.Header>
+      <AppShell.Header
+        style={{
+          background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+          borderBottom: '3px solid #90EE90',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
-          <Title order={3}>Farmer Dashboard</Title>
+          <Group gap="sm">
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: 'rgba(144, 238, 144, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text size="xl" fw={700} style={{ color: '#90EE90' }}>🌾</Text>
+            </div>
+            <div>
+              <Title order={3} style={{ color: 'white', margin: 0, fontSize: '20px' }}>
+                CropSense
+              </Title>
+              <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.8)', marginTop: '-2px' }}>
+                Farmer Portal
+              </Text>
+            </div>
+          </Group>
           <Group>
-            <Text size="sm">Welcome, {user?.username}!</Text>
+            <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
+              {user?.username}
+            </Text>
             <Button 
               leftSection={<IconMap size={16} />}
               onClick={() => setWeatherMapOpened(true)}
-              variant="light"
-              color="cyan"
+              variant="filled"
+              color="#90EE90"
+              style={{
+                background: 'rgba(144, 238, 144, 0.2)',
+                color: 'white',
+                border: '1px solid rgba(144, 238, 144, 0.3)',
+              }}
             >
-              Weather Map
+              Weather
             </Button>
             <Button 
               leftSection={<IconMessage size={16} />}
               onClick={() => navigate('/forum')}
-              variant="light"
+              variant="filled"
+              style={{
+                background: 'rgba(144, 238, 144, 0.2)',
+                color: 'white',
+                border: '1px solid rgba(144, 238, 144, 0.3)',
+              }}
             >
               Forum
             </Button>
             <ActionIcon 
-              variant="light" 
-              color="red" 
+              variant="filled"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+              }}
               onClick={handleLogout}
               size="lg"
             >
@@ -229,47 +277,84 @@ function FarmerDashboard() {
         <Container size="xl">
           {/* Weather Section */}
           {weather && (
-            <Paper shadow="sm" p="md" mb="lg" withBorder>
+            <Paper 
+              shadow="md" 
+              p="lg" 
+              mb="lg" 
+              style={{
+                background: 'white',
+                border: '2px solid #d4edda',
+                borderRadius: '12px',
+              }}
+            >
               <Group justify="space-between" mb="md">
-                <Title order={4}>Current Weather - {weather.city}</Title>
+                <Title order={4} style={{ color: '#2d5016' }}>
+                  Current Weather - {weather.city}
+                </Title>
                 <Button
                   size="sm"
-                  variant="light"
                   leftSection={<IconMap size={16} />}
                   onClick={() => setWeatherMapOpened(true)}
+                  style={{
+                    background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                    color: 'white',
+                  }}
                 >
                   View Pakistan Map
                 </Button>
               </Group>
               <Grid>
                 <Grid.Col span={4}>
-                  <Card withBorder>
+                  <Card 
+                    withBorder
+                    style={{
+                      background: 'linear-gradient(135deg, #fff8f0 0%, #fff 100%)',
+                      border: '2px solid #ffd8a8',
+                    }}
+                  >
                     <Group>
-                      <IconThermometer size={32} color="#ff6b6b" />
+                      <IconThermometer size={32} color="#fd7e14" />
                       <div>
-                        <Text size="xl" fw={700}>{weather.temperature}°C</Text>
+                        <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                          {weather.temperature}°C
+                        </Text>
                         <Text size="sm" c="dimmed">Temperature</Text>
                       </div>
                     </Group>
                   </Card>
                 </Grid.Col>
                 <Grid.Col span={4}>
-                  <Card withBorder>
+                  <Card 
+                    withBorder
+                    style={{
+                      background: 'linear-gradient(135deg, #e3f2fd 0%, #fff 100%)',
+                      border: '2px solid #a5d8ff',
+                    }}
+                  >
                     <Group>
-                      <IconDroplet size={32} color="#339af0" />
+                      <IconDroplet size={32} color="#1971c2" />
                       <div>
-                        <Text size="xl" fw={700}>{weather.humidity}%</Text>
+                        <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                          {weather.humidity}%
+                        </Text>
                         <Text size="sm" c="dimmed">Humidity</Text>
                       </div>
                     </Group>
                   </Card>
                 </Grid.Col>
                 <Grid.Col span={4}>
-                  <Card withBorder>
+                  <Card 
+                    withBorder
+                    style={{
+                      background: 'linear-gradient(135deg, #e8f5e9 0%, #fff 100%)',
+                      border: '2px solid #b2dfdb',
+                    }}
+                  >
                     <Group>
-                      <IconCloudRain size={32} color="#868e96" />
+                      <IconCloudRain size={32} color="#2e7d32" />
                       <div>
-                        <Text size="xl" fw={700}>{weather.condition}</Text>
+                        <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                          {weather.condition}</Text>
                         <Text size="sm" c="dimmed">Condition</Text>
                       </div>
                     </Group>
@@ -280,14 +365,25 @@ function FarmerDashboard() {
           )}
 
           {/* Produce Table Section */}
-          <Paper shadow="sm" p="md" withBorder>
+          <Paper 
+            shadow="md" 
+            p="lg" 
+            style={{
+              background: 'white',
+              border: '2px solid #d4edda',
+              borderRadius: '12px',
+            }}
+          >
             <Group justify="space-between" mb="md">
-              <Title order={4}>Market Prices</Title>
+              <Title order={4} style={{ color: '#2d5016' }}>Market Prices</Title>
               <Group>
                 {selectedForComparison.length >= 2 && (
                   <Button
                     leftSection={<IconChartLine size={16} />}
-                    color="violet"
+                    style={{
+                      background: 'linear-gradient(135deg, #7950f2 0%, #5f3dc4 100%)',
+                      color: 'white',
+                    }}
                     onClick={handleCompare}
                   >
                     Compare ({selectedForComparison.length})
@@ -299,6 +395,14 @@ function FarmerDashboard() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   style={{ width: 300 }}
+                  styles={{
+                    input: {
+                      borderColor: '#d4edda',
+                      '&:focus': {
+                        borderColor: '#4a7c2c',
+                      },
+                    },
+                  }}
                 />
               </Group>
             </Group>
@@ -329,7 +433,16 @@ function FarmerDashboard() {
                         <Checkbox
                           checked={selectedForComparison.includes(item.id)}
                           onChange={(e) => handleCompareCheckbox(item.id, e.currentTarget.checked)}
-                          color="violet"
+                          color="grape"
+                          styles={{
+                            input: {
+                              borderColor: '#9775fa',
+                              '&:checked': {
+                                backgroundColor: '#7950f2',
+                                borderColor: '#7950f2',
+                              },
+                            },
+                          }}
                         />
                       </Table.Td>
                       <Table.Td>
@@ -346,7 +459,14 @@ function FarmerDashboard() {
                       </Table.Td>
                       <Table.Td>
                         {item.latest_price ? (
-                          <Badge color="green" size="lg">
+                          <Badge 
+                            size="lg"
+                            style={{
+                              background: 'linear-gradient(135deg, #51cf66 0%, #37b24d 100%)',
+                              color: 'white',
+                              fontWeight: 600,
+                            }}
+                          >
                             Rs. {item.latest_price.toFixed(2)}
                           </Badge>
                         ) : (
@@ -385,15 +505,24 @@ function FarmerDashboard() {
                             leftSection={<IconTrendingUp size={14} />}
                             variant="light"
                             onClick={() => handleViewTrend(item)}
+                            style={{
+                              backgroundColor: '#e7f5ff',
+                              color: '#1971c2',
+                              border: '1px solid #a5d8ff',
+                            }}
                           >
                             View Trend
                           </Button>
                           <Button
                             size="xs"
-                            color="green"
                             variant="light"
                             onClick={() => handleGetAdvice(item)}
                             loading={loadingAdvice}
+                            style={{
+                              backgroundColor: '#d3f9d8',
+                              color: '#2f9e44',
+                              border: '1px solid #8ce99a',
+                            }}
                           >
                             Get Advice
                           </Button>
@@ -402,16 +531,30 @@ function FarmerDashboard() {
                     </Table.Tr>
                     {advice && adviceForProduceId === item.id && (
                       <Table.Tr>
-                        <Table.Td colSpan={8} style={{ padding: 0 }}>
+                        <Table.Td colSpan={9} style={{ padding: 0 }}>
                           <Alert 
                             title={`Smart Farming Advice for ${item.name}`}
-                            color="green" 
                             withCloseButton
                             onClose={() => {
                               setAdvice('');
                               setAdviceForProduceId(null);
                             }}
-                            style={{ margin: '8px', borderRadius: '8px' }}
+                            style={{ 
+                              margin: '8px', 
+                              borderRadius: '8px',
+                              background: 'linear-gradient(135deg, #d3f9d8 0%, #b2f2bb 100%)',
+                              border: '2px solid #8ce99a',
+                              color: '#2d5016',
+                            }}
+                            styles={{
+                              title: {
+                                color: '#2d5016',
+                                fontWeight: 600,
+                              },
+                              message: {
+                                color: '#2f9e44',
+                              },
+                            }}
                           >
                             {advice}
                           </Alert>

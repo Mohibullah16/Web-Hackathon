@@ -290,24 +290,67 @@ function AdminDashboard() {
 
   return (
     <AppShell
-      header={{ height: 60 }}
+      header={{ height: 70 }}
       padding="md"
+      styles={{
+        main: {
+          background: 'linear-gradient(to bottom, #f0f9ff 0%, #e8f5e9 100%)',
+          minHeight: '100vh',
+        },
+      }}
     >
-      <AppShell.Header>
+      <AppShell.Header
+        style={{
+          background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+          borderBottom: '3px solid #90EE90',
+        }}
+      >
         <Group h="100%" px="md" justify="space-between">
-          <Title order={3}>Admin Dashboard</Title>
+          <Group gap="sm">
+            <div
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: '50%',
+                background: 'rgba(144, 238, 144, 0.2)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Text size="xl" fw={700} style={{ color: '#90EE90' }}>🌾</Text>
+            </div>
+            <div>
+              <Title order={3} style={{ color: 'white', margin: 0, fontSize: '20px' }}>
+                CropSense
+              </Title>
+              <Text size="xs" style={{ color: 'rgba(255, 255, 255, 0.8)', marginTop: '-2px' }}>
+                Admin Portal
+              </Text>
+            </div>
+          </Group>
           <Group>
-            <Text size="sm">Welcome, {user?.username}!</Text>
+            <Text size="sm" fw={500} style={{ color: 'rgba(255, 255, 255, 0.95)' }}>
+              {user?.username}
+            </Text>
             <Button 
               leftSection={<IconMessage size={16} />}
               onClick={() => navigate('/forum')}
-              variant="light"
+              variant="filled"
+              style={{
+                background: 'rgba(144, 238, 144, 0.2)',
+                color: 'white',
+                border: '1px solid rgba(144, 238, 144, 0.3)',
+              }}
             >
               Forum
             </Button>
             <ActionIcon 
-              variant="light" 
-              color="red" 
+              variant="filled"
+              style={{
+                background: 'rgba(255, 255, 255, 0.15)',
+                color: 'white',
+              }}
               onClick={handleLogout}
               size="lg"
             >
@@ -321,50 +364,104 @@ function AdminDashboard() {
         <Container size="xl">
           {/* KPI Dashboard */}
           <SimpleGrid cols={{ base: 1, sm: 2, lg: 4 }} mb="xl">
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card 
+              shadow="md" 
+              padding="lg" 
+              radius="md"
+              style={{
+                background: 'white',
+                border: '2px solid #d4edda',
+              }}
+            >
               <Group justify="apart" mb="xs">
                 <Text size="sm" c="dimmed" fw={500}>Total Items</Text>
-                <IconShoppingCart size={20} color="blue" />
+                <IconShoppingCart size={20} color="#4a7c2c" />
               </Group>
-              <Text size="xl" fw={700}>{stats.totalItems}</Text>
+              <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                {stats.totalItems}
+              </Text>
               <Text size="xs" c="dimmed" mt="xs">Produce items in catalog</Text>
             </Card>
 
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card 
+              shadow="md" 
+              padding="lg" 
+              radius="md"
+              style={{
+                background: 'white',
+                border: '2px solid #c3fae8',
+              }}
+            >
               <Group justify="apart" mb="xs">
                 <Text size="sm" c="dimmed" fw={500}>Items with Prices</Text>
-                <IconChartBar size={20} color="green" />
+                <IconChartBar size={20} color="#2f9e44" />
               </Group>
-              <Text size="xl" fw={700}>{stats.totalPrices}</Text>
+              <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                {stats.totalPrices}
+              </Text>
               <Text size="xs" c="dimmed" mt="xs">Items with price data</Text>
             </Card>
 
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card 
+              shadow="md" 
+              padding="lg" 
+              radius="md"
+              style={{
+                background: 'white',
+                border: '2px solid #ffe8cc',
+              }}
+            >
               <Group justify="apart" mb="xs">
                 <Text size="sm" c="dimmed" fw={500}>Average Price</Text>
-                <IconCurrencyRupee size={20} color="orange" />
+                <IconCurrencyRupee size={20} color="#fd7e14" />
               </Group>
-              <Text size="xl" fw={700}>Rs. {stats.avgPrice}</Text>
+              <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                Rs. {stats.avgPrice}
+              </Text>
               <Text size="xs" c="dimmed" mt="xs">Across all items</Text>
             </Card>
 
-            <Card shadow="sm" padding="lg" radius="md" withBorder>
+            <Card 
+              shadow="md" 
+              padding="lg" 
+              radius="md"
+              style={{
+                background: 'white',
+                border: '2px solid #e5dbff',
+              }}
+            >
               <Group justify="apart" mb="xs">
                 <Text size="sm" c="dimmed" fw={500}>Recent Updates</Text>
-                <IconTrendingUp size={20} color="violet" />
+                <IconTrendingUp size={20} color="#7950f2" />
               </Group>
-              <Text size="xl" fw={700}>{stats.recentUpdates}</Text>
+              <Text size="xl" fw={700} style={{ color: '#2d5016' }}>
+                {stats.recentUpdates}
+              </Text>
               <Text size="xs" c="dimmed" mt="xs">Updated in last 7 days</Text>
             </Card>
           </SimpleGrid>
 
           {/* Produce Management Table */}
-          <Paper shadow="sm" p="md" withBorder>
+          <Paper 
+            shadow="md" 
+            p="lg"
+            style={{
+              background: 'white',
+              border: '2px solid #d4edda',
+              borderRadius: '12px',
+            }}
+          >
             <Group justify="space-between" mb="md">
-              <Title order={4}>Manage Produce & Prices</Title>
+              <Title order={4} style={{ color: '#2d5016' }}>
+                Manage Produce & Prices
+              </Title>
               <Button
                 leftSection={<IconPlus size={16} />}
                 onClick={() => setProduceModalOpened(true)}
+                style={{
+                  background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                  color: 'white',
+                }}
               >
                 Add Produce
               </Button>
@@ -407,7 +504,14 @@ function AdminDashboard() {
                       </Table.Td>
                       <Table.Td>
                         {item.latest_price ? (
-                          <Badge color="green" size="lg">
+                          <Badge 
+                            size="lg"
+                            style={{
+                              background: 'linear-gradient(135deg, #51cf66 0%, #37b24d 100%)',
+                              color: 'white',
+                              fontWeight: 600,
+                            }}
+                          >
                             Rs. {item.latest_price.toFixed(2)}
                           </Badge>
                         ) : (
@@ -443,18 +547,26 @@ function AdminDashboard() {
                         <Group gap={4}>
                           <Tooltip label="Edit">
                             <ActionIcon 
-                              variant="light" 
-                              color="blue"
+                              variant="light"
                               onClick={() => handleEditProduce(item)}
+                              style={{
+                                backgroundColor: '#e7f5ff',
+                                color: '#1971c2',
+                                border: '1px solid #a5d8ff',
+                              }}
                             >
                               <IconEdit size={16} />
                             </ActionIcon>
                           </Tooltip>
                           <Tooltip label="Delete">
                             <ActionIcon 
-                              variant="light" 
-                              color="red"
+                              variant="light"
                               onClick={() => handleDeleteProduce(item)}
+                              style={{
+                                backgroundColor: '#fff5f5',
+                                color: '#c92a2a',
+                                border: '1px solid #ffc9c9',
+                              }}
                             >
                               <IconTrash size={16} />
                             </ActionIcon>
@@ -473,8 +585,21 @@ function AdminDashboard() {
         <Modal
           opened={produceModalOpened}
           onClose={handleCloseProduceModal}
-          title={editingProduce ? 'Edit Produce' : 'Add New Produce'}
+          title={
+            <Text fw={600} size="lg" style={{ color: '#2d5016' }}>
+              {editingProduce ? 'Edit Produce' : 'Add New Produce'}
+            </Text>
+          }
           size="md"
+          styles={{
+            header: {
+              borderBottom: '2px solid #d4edda',
+              paddingBottom: '12px',
+            },
+            body: {
+              padding: '20px',
+            },
+          }}
         >
           <form onSubmit={produceForm.onSubmit(handleSubmitProduce)}>
             <Stack gap="md">
@@ -519,7 +644,14 @@ function AdminDashboard() {
                 </Text>
               )}
               
-              <Button fullWidth type="submit">
+              <Button 
+                fullWidth 
+                type="submit"
+                style={{
+                  background: 'linear-gradient(135deg, #4a7c2c 0%, #2d5016 100%)',
+                  color: 'white',
+                }}
+              >
                 {editingProduce ? 'Update Produce' : 'Add Produce with Price'}
               </Button>
             </Stack>

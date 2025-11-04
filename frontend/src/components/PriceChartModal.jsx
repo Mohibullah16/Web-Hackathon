@@ -44,8 +44,21 @@ function PriceChartModal({ opened, onClose, produceId, produceName }) {
     <Modal 
       opened={opened} 
       onClose={onClose} 
-      title={<Title order={3}>Price Trend - {produceName}</Title>}
+      title={
+        <Title order={3} style={{ color: '#2d5016' }}>
+          Price Trend - {produceName}
+        </Title>
+      }
       size="xl"
+      styles={{
+        header: {
+          borderBottom: '2px solid #d4edda',
+          paddingBottom: '12px',
+        },
+        body: {
+          padding: '20px',
+        },
+      }}
     >
       <LoadingOverlay visible={loading} />
       {chartData.length > 0 ? (
@@ -63,9 +76,10 @@ function PriceChartModal({ opened, onClose, produceId, produceName }) {
               <Line 
                 type="monotone" 
                 dataKey="price" 
-                stroke="#8884d8" 
-                strokeWidth={2}
-                activeDot={{ r: 8 }} 
+                stroke="#4a7c2c" 
+                strokeWidth={3}
+                activeDot={{ r: 8, fill: '#2d5016' }} 
+                dot={{ fill: '#51cf66', r: 4 }}
               />
             </LineChart>
           </ResponsiveContainer>
