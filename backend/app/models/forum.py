@@ -36,6 +36,7 @@ class Post(BaseModel):
     id: Optional[PyObjectId] = Field(alias="_id", default=None)
     title: str = Field(..., min_length=3, max_length=200)
     content: str = Field(..., min_length=10)
+    image_url: Optional[str] = None
     author_id: PyObjectId
     created_at: datetime = Field(default_factory=datetime.utcnow)
     updated_at: datetime = Field(default_factory=datetime.utcnow)
@@ -77,6 +78,7 @@ class PostResponse(BaseModel):
     id: str = Field(alias="_id", serialization_alias="id")
     title: str
     content: str
+    image_url: Optional[str] = None
     author_id: str
     author_username: str
     created_at: datetime
