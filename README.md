@@ -1,5 +1,5 @@
 # Smart Agriculture Market Tracker
-
+# Won 2nd Place, Hacktober Fest Web Innovator Hackathon 
 A full-stack web application for tracking agricultural produce prices and providing smart farming advice using AI.
 
 ## Features
